@@ -28,3 +28,9 @@ Widget::~Widget()
     delete ui;
 }
 
+
+void Widget::on_startGameButton_clicked()
+{
+    scene->startGame();
+}
+

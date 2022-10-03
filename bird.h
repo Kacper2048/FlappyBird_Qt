@@ -15,7 +15,8 @@ public:
     qreal y() const;
     qreal rotation() const;
     void shootUp();
-
+    void startFlying();
+    void freezeInPlace();
 
 signals:
 public slots:

@@ -1,8 +1,9 @@
-#include "pillar.h"
 #include <QRandomGenerator>
 #include <QGraphicsScene>
-
 #include <QDebug>
+
+#include "pillar.h"
+#include "bird.h"
 
 Pillar::Pillar() :
     topPillar(new QGraphicsPixmapItem(QPixmap(":/images/pillar.png"))),
@@ -47,9 +48,35 @@ qreal Pillar::x() const
     return m_x;
 }
 
+void Pillar::freezeInPlace()
+{
+    xAnimation->stop();
+}
+
 void Pillar::setX(qreal newX)
 {
     qDebug() << "Pillar's position : " << newX;
     m_x = newX;
+    if(collideWithBird())
+    {
+        emit collideFail();
+    }
     setPos(QPoint(0,0)+QPointF(newX,yPos));
 }
+
+bool Pillar::collideWithBird()
+{
+    QList<QGraphicsItem*> collidingItems = topPillar->collidingItems();
+    collidingItems.append(bottomPillar->collidingItems());
+
+    foreach(QGraphicsItem * item ,collidingItems)
+    {
+        Bird * birdItem = dynamic_cast<Bird*>(item);
+        if(birdItem)
+        {
+                return true;
+        }
+    }
+    return false;
+}
+

@@ -16,6 +16,9 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
+private slots:
+    void on_startGameButton_clicked();
+
 private:
     Ui::Widget *ui;
 

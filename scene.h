@@ -12,18 +12,25 @@ class Scene : public QGraphicsScene
 public:
     explicit Scene(QObject *parent = nullptr);
     void addBird();
+    void startGame();
+
+    bool getGameOn() const;
+    void setGameOn(bool newGameOn);
+
 signals:
 
-private:
-    void setUpPillarTimer();
-    QTimer * pillarTimer;
-    Bird * bird;
-
-
-    // QGraphicsScene interface
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
+
+private:
+    void setUpPillarTimer();
+    void freezeBirdAndPillarsInPlace();
+    QTimer * pillarTimer;
+    Bird * bird;
+
+    bool gameOn;
+
 
 };
 
