@@ -35,6 +35,7 @@ private:
     int yPos = 0;
 
     qreal m_x;
+    bool pastBird = false;
 };
 
 #endif // PILLAR_H

@@ -14,6 +14,10 @@ void Scene::addBird()
     addItem(bird);
 }
 
+void Scene::resetScore()
+{
+    score = 0;
+}
 void Scene::startGame()
 {
     //Bird
@@ -21,8 +25,11 @@ void Scene::startGame()
     //Pillars
     if(!pillarTimer->isActive())
     {
+        cleanPillars();
         setGameOn(true);
         pillarTimer->start(1000);
+        hideGameOverGraphics();
+        resetScore();
     }
 
 }
@@ -30,6 +37,7 @@ void Scene::startGame()
 void Scene::setUpPillarTimer()
 {
     pillarTimer = new QTimer(this);
+
     connect(pillarTimer,&QTimer::timeout,[=]()
     {
         Pillar * pillarItem = new Pillar();
@@ -38,6 +46,7 @@ void Scene::setUpPillarTimer()
             pillarTimer->stop();
             freezeBirdAndPillarsInPlace();
             setGameOn(false);
+            showGameOverGraphics();
 
         });
         addItem(pillarItem);
@@ -70,6 +79,15 @@ void Scene::setGameOn(bool newGameOn)
     gameOn = newGameOn;
 }
 
+void Scene::incrementScore()
+{
+    score++;
+    if(score > bestScore)
+    {
+        bestScore = score;
+    }
+}
+
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if(event->button() == Qt::LeftButton)
@@ -92,4 +110,59 @@ void Scene::keyPressEvent(QKeyEvent *event)
         }
     }
     QGraphicsScene::keyPressEvent(event);
+}
+
+void Scene::showGameOverGraphics()
+{
+    gameOverPix = new QGraphicsPixmapItem(QPixmap(":/images/game_over_red.png"));
+    addItem(gameOverPix);
+    gameOverPix->setPos(QPointF(0,0) - QPointF(gameOverPix->boundingRect().width()/2,
+                                               gameOverPix->boundingRect().height()/2));
+
+    scoreTextItem = new QGraphicsTextItem();
+
+    QString htmlString ="<p> Score: "+QString::number(score) + "</p>" + "<p> Best Score : "
+            + QString::number(bestScore) + "</p>";
+
+    QFont mFont("Consolas", 30, QFont::Bold);
+    scoreTextItem->setHtml(htmlString);
+    scoreTextItem->setFont(mFont);
+    scoreTextItem->setDefaultTextColor(Qt::yellow);
+    addItem(scoreTextItem);
+
+    scoreTextItem->setPos(QPointF(0,0) - QPointF(scoreTextItem->boundingRect().width()/2,
+                          -gameOverPix->boundingRect().height()/2));
+}
+
+void Scene::hideGameOverGraphics()
+{
+    if(gameOverPix != nullptr)
+    {
+        removeItem(gameOverPix);
+        delete gameOverPix;
+        gameOverPix = nullptr;
+    }
+
+    if(scoreTextItem != nullptr)
+    {
+        removeItem(scoreTextItem);
+        delete scoreTextItem;
+        scoreTextItem = nullptr;
+
+
+    }
+}
+
+void Scene::cleanPillars()
+{
+    QList<QGraphicsItem *> sceneItems = items();
+    foreach(QGraphicsItem * item, sceneItems)
+    {
+        Pillar * pillar_temp = dynamic_cast<Pillar *>(item);
+        if(pillar_temp)
+        {
+            removeItem(pillar_temp);
+            delete pillar_temp;
+        }
+    }
 }

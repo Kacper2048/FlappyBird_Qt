@@ -16,6 +16,8 @@ public:
 
     bool getGameOn() const;
     void setGameOn(bool newGameOn);
+    void incrementScore();
+    void resetScore();
 
 signals:
 
@@ -24,13 +26,22 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 
 private:
+    void showGameOverGraphics();
+    void hideGameOverGraphics();
+    void cleanPillars();
     void setUpPillarTimer();
     void freezeBirdAndPillarsInPlace();
-    QTimer * pillarTimer;
-    Bird * bird;
+
+    QTimer * pillarTimer = nullptr;
+    Bird * bird = nullptr;
 
     bool gameOn;
 
+    int score = 0;
+    int bestScore = 0;
+
+    QGraphicsPixmapItem * gameOverPix = nullptr;
+    QGraphicsTextItem * scoreTextItem = nullptr;
 
 };
 

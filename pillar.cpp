@@ -4,6 +4,7 @@
 
 #include "pillar.h"
 #include "bird.h"
+#include "scene.h"
 
 Pillar::Pillar() :
     topPillar(new QGraphicsPixmapItem(QPixmap(":/images/pillar.png"))),
@@ -33,14 +34,13 @@ Pillar::Pillar() :
        scene()->removeItem(this);
        delete this;
     });
-
-
-
 }
 
 Pillar::~Pillar()
 {
     qDebug() << "Deleting Pillar";
+    delete topPillar;
+    delete bottomPillar;
 }
 
 qreal Pillar::x() const
@@ -55,7 +55,17 @@ void Pillar::freezeInPlace()
 
 void Pillar::setX(qreal newX)
 {
-    qDebug() << "Pillar's position : " << newX;
+    if(newX < 0 && !pastBird)
+    {
+        pastBird = true;
+        QGraphicsScene * mScene = scene();
+        Scene * myScene = dynamic_cast<Scene *>(mScene);
+        if(myScene)
+        {
+           myScene->incrementScore();
+        }
+    }
+
     m_x = newX;
     if(collideWithBird())
     {
