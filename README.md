@@ -1,2 +1,2 @@
 # FlappyBird_Qt
-Atteptings to make pseudo flappy birds in Qt
+An attempt to make a pseudo flappy bird in Qt
